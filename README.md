@@ -2,26 +2,53 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.1.3.
 
-## Development server
+### Unit test
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+```bash
+npm test
+```
 
-## Code scaffolding
+### I18n
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+```bash
+npm run i18n
+```
 
-## Build
+### Collaboration
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+***must:***
 
-## Running unit tests
+1. 提交合并前，务必检查lint没有抛错，UT都能跑过。关于lint，可以安装编辑器lint插件，如vscode的tslint。也可以提交前跑`npm run lint`来检查lint错误。
+2. 请检查编辑器是否加载了editorconfig里面的配置
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+***nice to have:***
 
-## Running end-to-end tests
+遵照[karma commit rule](http://karma-runner.github.io/0.10/dev/git-commit-msg.html)来描述commit。
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+#### 模块定义
 
-## Further help
+- shared
+模块间公用组件或服务
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+### Release
+
+```bash
+npm run build:prod
+```
+
+### 制作CI build image
+
+当node依赖更新时，需重新制作image。在项目根目录下运行
+
+```
+docker build . -f ci/Dockerfile -t tdc/warpstor-frontend
+docker tag tdc/warpstor-frontend 172.16.1.99/frontend/warpstor-frontend/build/warpstor-frontend:latest
+docker push 172.16.1.99/frontend/warpstor-frontend/build/warpstor-frontend:latest
+```
+
+### 得到最新的artifacts
+
+对于master分支，可由以下链接得到最新的artifacts，即`npm run build:prod`得到的文件。
+```
+http://172.16.1.41:10080/TDC/warpstor-frontend/-/jobs/artifacts/master/download?job=postcommit
+```

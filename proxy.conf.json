@@ -1,0 +1,7 @@
+{
+  "/ops": {
+    "target": "http://172.16.132.217:31000/",
+    "secure": false,
+    "changeOrigin": true
+  }
+}
