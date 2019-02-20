@@ -1,0 +1,84 @@
+image: 172.16.1.99/frontend/tcc-frontend/build/tcc-ci-7
+before_script:
+
+stages:
+  - test
+  - build
+
+build-prod:
+  stage: test
+  script:
+    - echo "build-prod started"
+    - cd /TDC/tcc-frontend
+    - cp -r /usr/src/app/node_modules /TDC/tcc-frontend/node_modules
+    - npm run build:prod
+  only:
+    - /.*_\d{10}$/
+  tags:
+    - k8s
+
+unit-test:
+  stage: test
+  script:
+    - echo "unit-test started"
+    - cd /TDC/tcc-frontend
+    - cp -r /usr/src/app/node_modules /TDC/tcc-frontend/node_modules
+    - npm run test:single
+  only:
+    - /.*_\d{10}$/
+  tags:
+    - k8s
+
+postcommit:
+  stage: build
+  script:
+    - echo "build-prod started"
+    - cd /TDC/tcc-frontend
+    - cp -r /usr/src/app/node_modules /TDC/tcc-frontend/node_modules
+    - npm run build:prod
+    - if [ $CI_COMMIT_REF_NAME == "master" ]; then
+    -   "curl -Lvk -H 'PRIVATE-TOKEN: TN42eT8KyzNs4zKmwDeo' -X POST http://172.16.1.41:10080/api/v4/projects/905/pipeline?ref=master"
+    - fi
+  artifacts:
+    expire_in: 6 mos
+    paths:
+      - dist
+  only:
+    - master
+    - /^tdc-.+/
+  tags:
+    - k8s
+
+oem:
+  stage: build
+  script:
+    - echo "build-prod started on ref" $CI_COMMIT_REF_NAME
+    - cd /TDC/tcc-frontend
+    - cp -r /usr/src/app/node_modules /TDC/tcc-frontend/node_modules
+    - npm run build:prod
+    - OEM_COMPANY=$(echo $CI_COMMIT_REF_NAME | cut -d'/' -f 2)
+    - echo "start replace oem assets for" $OEM_COMPANY
+    - ./scripts/runTccOem.sh $OEM_COMPANY dist/assets/
+  artifacts:
+    paths:
+      - dist
+  only:
+    - /^tdcoem\/.+/
+  tags:
+    - k8s
+
+catalog:
+  stage: build
+  script:
+    - echo "build-prod started"
+    - cd /TDC/tcc-frontend
+    - cp -r /usr/src/app/node_modules /TDC/tcc-frontend/node_modules
+    - npm run build:catalog
+  artifacts:
+    expire_in: 6 mos
+    paths:
+      - dist
+  only:
+    - /^catalog-dev$/
+  tags:
+    - k8s
