@@ -1,4 +1,4 @@
-FROM tdc/warpstor-ci 172.16.1.99/frontend/warpstor/build/warpstor-ci:latest
+FROM 172.16.1.99/frontend/warpstor/build/warpstor-ci:chrome
 ARG APP_DIR="/usr/src/app"
 
 COPY package.json .npmrc $APP_DIR/
