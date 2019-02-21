@@ -1,4 +1,4 @@
-FROM 172.16.1.99/frontend/tdc-ui/build/ci-base-8.11
+FROM tdc/warpstor-ci 172.16.1.99/frontend/warpstor/build/warpstor-ci:latest
 ARG APP_DIR="/usr/src/app"
 
 COPY package.json .npmrc $APP_DIR/
