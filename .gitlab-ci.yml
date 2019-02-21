@@ -1,4 +1,4 @@
-image: 172.16.1.99/frontend/warpstor-frontend/build/warpstor-ci-7
+image: tdc/warpstor-ci 172.16.1.99/frontend/warpstor/build/warpstor-ci:latest
 before_script:
 
 stages:
